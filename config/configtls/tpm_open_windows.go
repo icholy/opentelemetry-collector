@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-//go:build windows
+//go:build !notpm && windows
 
 package configtls // import "go.opentelemetry.io/collector/config/configtls"
 
@@ -12,8 +12,8 @@ import (
 	"github.com/google/go-tpm/tpmutil"
 )
 
-func openTPM(path string) func() (transport.TPMCloser, error) {
-	return func() (transport.TPMCloser, error) {
+func openTPM(path string) func() (tpmCloser, error) {
+	return func() (tpmCloser, error) {
 		tpm, err := tpmutil.OpenTPM()
 		if err != nil {
 			return nil, fmt.Errorf("failed to open TPM: %w", err)

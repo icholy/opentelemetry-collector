@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-//go:build linux
+//go:build !notpm && linux
 
 package configtls // import "go.opentelemetry.io/collector/config/configtls"
 
@@ -14,10 +14,10 @@ import (
 )
 
 // for testing
-var tpmSimulator transport.TPMCloser
+var tpmSimulator tpmCloser
 
-func openTPM(path string) func() (transport.TPMCloser, error) {
-	return func() (transport.TPMCloser, error) {
+func openTPM(path string) func() (tpmCloser, error) {
+	return func() (tpmCloser, error) {
 		if path == "" {
 			return nil, errors.New("TPM path is not set")
 		}

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Don't run this test on Windows, as it requires a TPM simulator which depends on openssl headers.
-//go:build !windows && !darwin
+//go:build !notpm && !windows && !darwin
 
 package configtls // import "go.opentelemetry.io/collector/config/configtls"
 
@@ -102,7 +102,7 @@ func TestTPM_tpmCertificate_errors(t *testing.T) {
 	require.NoError(t, err)
 	defer tpm.Close()
 
-	openTPMFunc := func() (transport.TPMCloser, error) {
+	openTPMFunc := func() (tpmCloser, error) {
 		return tpm, nil
 	}
 
@@ -115,7 +115,7 @@ VGhpcyBpcyBub3QgYSBjZXJ0aWZpY2F0ZS4=
 	tests := []struct {
 		name    string
 		key     string
-		openTPM func() (transport.TPMCloser, error)
+		openTPM func() (tpmCloser, error)
 		cert    string
 		err     string
 	}{
@@ -134,7 +134,7 @@ VGhpcyBpcyBub3QgYSBjZXJ0aWZpY2F0ZS4=
 		},
 		{
 			name: "failed to open TPM",
-			openTPM: func() (transport.TPMCloser, error) {
+			openTPM: func() (tpmCloser, error) {
 				return nil, errors.New("failed to open TPM")
 			},
 			err: "failed to open TPM",
